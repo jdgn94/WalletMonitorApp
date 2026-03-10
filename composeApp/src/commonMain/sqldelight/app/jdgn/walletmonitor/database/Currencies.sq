@@ -1,0 +1,20 @@
+CREATE TABLE currencies (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL,
+    symbol TEXT NOT NULL,
+    symbol_native TEXT NOT NULL,
+    decimal_digits INTEGER NOT NULL,
+    code TEXT NOT NULL,
+    currency_type_id INTEGER NOT NULL,
+    countries_ids TEXT NOT NULL,
+    created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
+    FOREIGN KEY (currency_type_id) REFERENCES currency_type(id)
+);
+
+insertCurrency:
+INSERT INTO currencies(name, symbol, symbol_native, decimal_digits, code, currency_type_id, countries_ids)
+VALUES (?, ?, ?, ?, ?, ?, ?);
+
+selectAllCurrencies:
+SELECT * FROM currencies;

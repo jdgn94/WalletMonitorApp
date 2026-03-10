@@ -1,0 +1,13 @@
+CREATE TABLE exchange_rates (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    amount REAL NOT NULL,
+    currency_id INTEGER NOT NULL,
+    FOREIGN KEY (currency_id) REFERENCES currencies(id)
+);
+
+insertExchangeRate:
+INSERT INTO exchange_rates(amount, currency_id)
+VALUES (?, ?);
+
+selectAllExchangeRates:
+SELECT * FROM exchange_rates;

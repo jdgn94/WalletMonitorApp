@@ -1,0 +1,10 @@
+CREATE TABLE currency_type (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL
+);
+
+insertCurrencyType:
+INSERT INTO currency_type(name) VALUES (?);
+
+selectAllCurrencyTypes:
+SELECT * FROM currency_type;
