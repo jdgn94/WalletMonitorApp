@@ -36,6 +36,7 @@ kotlin {
             implementation(libs.sqldelight.android.driver)
             implementation(libs.koin.android)
             implementation(libs.androidx.security.crypto) // For EncryptedSharedPreferences
+            implementation(libs.androidx.datastore.preferences)
         }
         commonMain.dependencies {
             implementation(libs.compose.runtime)
@@ -59,6 +60,13 @@ kotlin {
 
             // Settings
             implementation(libs.multiplatform.settings)
+            implementation(libs.multiplatform.settings.datastore)
+
+            // Color Picker
+            implementation(libs.colorpicker.compose)
+
+            // Datetime
+            implementation(libs.kotlinx.datetime)
         }
         iosMain.dependencies {
             implementation(libs.sqldelight.native.driver)

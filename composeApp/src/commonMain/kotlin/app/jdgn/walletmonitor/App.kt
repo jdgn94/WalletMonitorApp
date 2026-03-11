@@ -9,12 +9,14 @@ import androidx.compose.material3.Surface
 import androidx.compose.runtime.*
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
-import app.jdgn.walletmonitor.database.AppConfig
+import app.jdgn.walletmonitor.data.local.AppConfig
+import app.jdgn.walletmonitor.data.local.DatabaseSeeder
 import app.jdgn.walletmonitor.navigation.Screen
 import app.jdgn.walletmonitor.navigation.rememberNavigator
 import app.jdgn.walletmonitor.ui.components.dialogs.ExitDialog
 import app.jdgn.walletmonitor.ui.screens.HomeScreen
 import app.jdgn.walletmonitor.ui.screens.SettingsScreen
+import app.jdgn.walletmonitor.ui.screens.TestScreen
 import app.jdgn.walletmonitor.ui.screens.WalletDetailsScreen
 import app.jdgn.walletmonitor.ui.theme.WalletMonitorTheme
 import org.koin.compose.koinInject
@@ -23,6 +25,13 @@ import org.koin.compose.koinInject
 @Preview
 fun App() {
     val appConfig: AppConfig = koinInject()
+    val seeder: DatabaseSeeder = koinInject()
+    
+    // Ejecutamos la semilla al iniciar la aplicación
+    // La función seed() internamente verifica si las tablas están vacías
+    LaunchedEffect(Unit) {
+        seeder.seed()
+    }
     
     val isDarkTheme = when (appConfig.themeMode) {
         "light" -> false
@@ -68,6 +77,7 @@ fun App() {
                 ) { screen ->
                     when (screen) {
                         is Screen.Home -> HomeScreen(navigator)
+                        is Screen.Test -> TestScreen(navigator)
                         is Screen.Settings -> SettingsScreen(navigator)
                         is Screen.WalletDetails -> WalletDetailsScreen(screen.walletId, navigator)
                     }

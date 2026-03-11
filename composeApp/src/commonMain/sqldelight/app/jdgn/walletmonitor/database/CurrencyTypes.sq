@@ -8,3 +8,6 @@ INSERT INTO currency_type(name) VALUES (?);
 
 selectAllCurrencyTypes:
 SELECT * FROM currency_type;
+
+selectTypeByName:
+SELECT * FROM currency_type WHERE name = ?;

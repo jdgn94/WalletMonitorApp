@@ -1,4 +1,4 @@
-package app.jdgn.walletmonitor.database
+package app.jdgn.walletmonitor.data.local
 
 import androidx.compose.runtime.getValue
 import androidx.compose.runtime.mutableStateOf

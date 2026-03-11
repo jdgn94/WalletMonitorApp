@@ -9,3 +9,6 @@ INSERT INTO countries(name, abbr) VALUES (?, ?);
 
 selectAllCountries:
 SELECT * FROM countries;
+
+selectCountryByAbbr:
+SELECT * FROM countries WHERE abbr = ?;

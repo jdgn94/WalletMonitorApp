@@ -1,6 +1,6 @@
 package app.jdgn.walletmonitor.di
 
-import app.jdgn.walletmonitor.database.DatabaseDriverFactory
+import app.jdgn.walletmonitor.data.local.DatabaseDriverFactory
 import app.jdgn.walletmonitor.database.IOSDatabaseDriverFactory
 import com.russhwolf.settings.ExperimentalSettingsImplementation
 import com.russhwolf.settings.KeychainSettings

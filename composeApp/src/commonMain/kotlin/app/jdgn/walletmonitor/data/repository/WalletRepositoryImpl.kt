@@ -1,8 +1,12 @@
-package app.jdgn.walletmonitor.database
+package app.jdgn.walletmonitor.data.local
 
 import kotlinx.coroutines.flow.Flow
 import app.cash.sqldelight.coroutines.asFlow
 import app.cash.sqldelight.coroutines.mapToList
+import app.jdgn.walletmonitor.database.AppDatabase
+import app.jdgn.walletmonitor.database.Banks
+import app.jdgn.walletmonitor.database.Countries
+import app.jdgn.walletmonitor.database.Currencies
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 

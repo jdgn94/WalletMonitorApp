@@ -1,4 +1,4 @@
-package app.jdgn.walletmonitor.database
+package app.jdgn.walletmonitor.data.local
 
 object StorageKeys {
     const val THEME_MODE = "theme_mode"
