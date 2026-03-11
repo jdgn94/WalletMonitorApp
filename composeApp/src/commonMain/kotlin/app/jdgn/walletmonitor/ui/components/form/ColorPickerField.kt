@@ -32,7 +32,6 @@ fun ColorPickerField(
 ) {
     var showDialog by remember { mutableStateOf(false) }
     
-    // Convertimos el Hexadecimal de entrada a un objeto Color usable
     val currentColor = remember(selectedColorHex) {
         try {
             val hex = selectedColorHex.removePrefix("#")
@@ -44,8 +43,8 @@ fun ColorPickerField(
     }
 
     val themeColor = customThemeColor ?: MaterialTheme.colorScheme.primary
-    // Por defecto siempre es surface, solo cambia si se pasa customContainerColor
     val backgroundColor = customContainerColor ?: MaterialTheme.colorScheme.surface
+    val onThemeColor = if (themeColor == MaterialTheme.colorScheme.primary) MaterialTheme.colorScheme.onPrimary else Color.White
 
     Column(modifier = modifier) {
         CustomBox(
@@ -63,7 +62,6 @@ fun ColorPickerField(
                     .background(backgroundColor)
                     .padding(horizontal = 16.dp)
             ) {
-                // Label estilo focus interno
                 Text(
                     text = label,
                     color = themeColor,
@@ -107,18 +105,18 @@ fun ColorPickerField(
         val controller = rememberColorPickerController()
         var tempColor by remember { mutableStateOf(currentColor) }
         
-        // Sincronizar el controlador con el color actual cuando se abre
         LaunchedEffect(currentColor) {
             controller.selectByColor(currentColor, fromUser = false)
         }
 
         CustomDialog(
             onDismissRequest = { showDialog = false },
+            shadowColor = tempColor,
+            backgroundColor = tempColor,
             header = {
                 Text(
                     text = "Pick a color", 
                     style = MaterialTheme.typography.headlineSmall,
-                    color = themeColor
                 )
             },
             body = {
@@ -136,12 +134,11 @@ fun ColorPickerField(
                             initialColor = currentColor
                         )
 
-                        // Slider de Intensidad (Brillo) de la librería
                         Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
                             Text(
                                 text = "Intensity",
                                 style = MaterialTheme.typography.labelMedium,
-                                color = MaterialTheme.colorScheme.onSurfaceVariant
+                                color = onThemeColor.copy(alpha = 0.7f)
                             )
                             BrightnessSlider(
                                 modifier = Modifier
@@ -151,7 +148,6 @@ fun ColorPickerField(
                             )
                         }
 
-                        // Previsualización circular en el diálogo
                         Box(
                             modifier = Modifier
                                 .size(50.dp)
@@ -163,19 +159,21 @@ fun ColorPickerField(
             actions = {
                 TextButton(
                     onClick = { showDialog = false },
-                    colors = ButtonDefaults.textButtonColors(contentColor = themeColor)
-                ) { 
+                    colors = ButtonDefaults.textButtonColors(contentColor = tempColor)
+                ) {
                     Text("CANCEL") 
                 }
                 Button(
                     onClick = {
-                        // Generamos el Hex para la base de datos
                         val argb = tempColor.toArgb()
                         val hex = "#" + (argb.toUInt().toString(16).padStart(8, '0').takeLast(6)).uppercase()
                         onColorSelected(tempColor, hex)
                         showDialog = false
                     },
-                    colors = ButtonDefaults.buttonColors(containerColor = themeColor)
+                    colors = ButtonDefaults.buttonColors(
+                        containerColor = tempColor,
+                        contentColor = onThemeColor
+                    )
                 ) {
                     Text("SELECT")
                 }

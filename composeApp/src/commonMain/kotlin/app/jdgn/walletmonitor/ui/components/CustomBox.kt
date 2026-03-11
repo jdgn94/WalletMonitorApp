@@ -69,13 +69,17 @@ fun CustomBox(
     Surface(
         modifier = boxModifier.then(clickableModifier),
         shape = shape,
-        color = backgroundColor,
+        color = MaterialTheme.colorScheme.surface,
         border = if (borderWidth > 0.dp) BorderStroke(borderWidth, borderColor) else null
     ) {
-        Box(
-            modifier = Modifier.padding(padding)
-        ) {
-            content()
+        Surface(
+            color = backgroundColor
+        ){
+            Box(
+                modifier = Modifier.padding(padding)
+            ) {
+                content()
+            }
         }
     }
 }

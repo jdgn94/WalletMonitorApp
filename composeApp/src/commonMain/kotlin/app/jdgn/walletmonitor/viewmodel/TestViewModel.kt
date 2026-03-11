@@ -8,8 +8,8 @@ import kotlinx.coroutines.flow.asStateFlow
 
 data class TestScreenState(
     val searchText: String = "",
-    val selectedColorHex: String = "#006D3A",
-    val componentColor: Color = Color(0xFF006D3A),
+    val componentColor: Color = ColorUtils.getRandomColor(),
+    val selectedColorHex: String = ColorUtils.colorToHex(componentColor),
     val isLoading: Boolean = false,
     val isSearchError: Boolean = false
 )
