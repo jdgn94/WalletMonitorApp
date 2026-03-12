@@ -5,8 +5,7 @@ object StorageKeys {
     const val BORDER_RADIUS = "border_radius"
     const val LANGUAGE = "language"
     const val DYNAMIC_COLOR = "dynamic_color"
-    
-    // Aquí puedes agregar más keys a medida que las necesites
-    // const val USER_TOKEN = "user_token"
-    // const val FIRST_LAUNCH = "first_launch"
+    const val DEFAULT_CURRENCY_ID = "default_currency_id"
+    const val CURRENCY_SYMBOL_POSITION = "currency_symbol_position" // "prefix" or "suffix"
+    const val AMOUNT_FORMAT = "amount_format" // e.g., "1,234.56"
 }

@@ -67,6 +67,9 @@ kotlin {
 
             // Datetime
             implementation(libs.kotlinx.datetime)
+
+            // BigNum for precision arithmetic
+            implementation(libs.bignum)
         }
         iosMain.dependencies {
             implementation(libs.sqldelight.native.driver)

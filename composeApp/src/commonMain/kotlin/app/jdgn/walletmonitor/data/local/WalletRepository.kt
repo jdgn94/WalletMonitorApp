@@ -1,4 +1,4 @@
-package app.jdgn.walletmonitor.data.repository
+package app.jdgn.walletmonitor.data.local
 
 import kotlinx.coroutines.flow.Flow
 import app.cash.sqldelight.coroutines.asFlow

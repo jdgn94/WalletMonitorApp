@@ -1,0 +1,14 @@
+CREATE TABLE account_types (
+    id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
+    name TEXT NOT NULL UNIQUE
+);
+
+-- Consultas para account_types
+selectAllAccountTypes:
+SELECT * FROM account_types;
+
+selectAccountTypeByName:
+SELECT * FROM account_types WHERE name = ?;
+
+insertAccountType:
+INSERT INTO account_types(name) VALUES (?);

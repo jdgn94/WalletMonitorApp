@@ -66,7 +66,6 @@ fun ColorPickerField(
                     text = label,
                     color = themeColor,
                     style = MaterialTheme.typography.labelSmall,
-                    fontWeight = FontWeight.SemiBold,
                     modifier = Modifier.padding(top = 8.dp)
                 )
 

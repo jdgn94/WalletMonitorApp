@@ -4,12 +4,12 @@ CREATE TABLE currencies (
     symbol TEXT NOT NULL,
     symbol_native TEXT NOT NULL,
     decimal_digits INTEGER NOT NULL,
-    code TEXT NOT NULL,
+    code TEXT NOT NULL UNIQUE,
     currency_type_id INTEGER NOT NULL,
     countries_ids TEXT NOT NULL,
     created_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
     updated_at TEXT NOT NULL DEFAULT CURRENT_TIMESTAMP,
-    FOREIGN KEY (currency_type_id) REFERENCES currency_type(id)
+    FOREIGN KEY (currency_type_id) REFERENCES currency_types(id)
 );
 
 insertCurrency:
@@ -18,3 +18,9 @@ VALUES (?, ?, ?, ?, ?, ?, ?);
 
 selectAllCurrencies:
 SELECT * FROM currencies;
+
+selectCurrencyByCode:
+SELECT * FROM currencies WHERE code = ?;
+
+selectCurrencyById:
+SELECT * FROM currencies WHERE id = ?;

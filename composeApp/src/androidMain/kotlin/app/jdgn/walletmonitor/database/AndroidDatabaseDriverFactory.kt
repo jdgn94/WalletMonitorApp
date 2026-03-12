@@ -9,4 +9,8 @@ class AndroidDatabaseDriverFactory(private val context: Context) : DatabaseDrive
     override fun createDriver(): SqlDriver {
         return AndroidSqliteDriver(AppDatabase.Schema, context, "wallet.db")
     }
+
+    override fun deleteDatabase() {
+        context.deleteDatabase("wallet.db")
+    }
 }

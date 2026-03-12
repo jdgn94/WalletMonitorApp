@@ -4,9 +4,7 @@ import androidx.compose.foundation.layout.*
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.Text
-import androidx.compose.runtime.Composable
-import androidx.compose.runtime.collectAsState
-import androidx.compose.runtime.getValue
+import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.unit.dp
@@ -14,6 +12,7 @@ import app.jdgn.walletmonitor.navigation.Navigator
 import app.jdgn.walletmonitor.ui.components.CustomBox
 import app.jdgn.walletmonitor.ui.components.CustomScaffold
 import app.jdgn.walletmonitor.ui.components.FadingScroll
+import app.jdgn.walletmonitor.ui.components.form.AmountInputField
 import app.jdgn.walletmonitor.ui.components.form.ColorPickerField
 import app.jdgn.walletmonitor.ui.components.form.CustomTextField
 import app.jdgn.walletmonitor.viewmodel.TestViewModel
@@ -23,6 +22,8 @@ import org.koin.compose.koinInject
 fun TestScreen(navigator: Navigator) {
     val viewModel: TestViewModel = koinInject()
     val state by viewModel.state.collectAsState()
+    
+    var testAmount by remember { mutableStateOf(0.0) }
 
     CustomScaffold(
         title = "test",
@@ -36,6 +37,15 @@ fun TestScreen(navigator: Navigator) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
+            AmountInputField(
+                value = testAmount,
+                onValueChange = { testAmount = it },
+                label = "Test Amount Input",
+                customThemeColor = state.componentColor,
+
+                modifier = Modifier.fillMaxWidth()
+            )
+
             CustomTextField(
                 value = state.searchText,
                 onValueChange = { viewModel.updateSearchText(it) },

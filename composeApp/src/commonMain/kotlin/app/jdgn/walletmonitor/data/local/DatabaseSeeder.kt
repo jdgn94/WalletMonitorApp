@@ -10,8 +10,12 @@ class DatabaseSeeder(private val database: AppDatabase) {
     private val countriesQueries = database.countriesQueries
     private val currenciesQueries = database.currenciesQueries
     private val currencyTypesQueries = database.currencyTypesQueries
+    private val accountTypesQueries = database.accountTypesQueries
 
     suspend fun seed() = withContext(Dispatchers.IO) {
+        // Semilla para Account Types
+        seedAccountTypes()
+        
         // Solo ejecutamos si la tabla de monedas está vacía
         val currentCurrencies = currenciesQueries.selectAllCurrencies().executeAsList()
         if (currentCurrencies.isNotEmpty()) return@withContext
@@ -48,6 +52,17 @@ class DatabaseSeeder(private val database: AppDatabase) {
                     currency_type_id = typeId,
                     countries_ids = currency.countries.joinToString(",")
                 )
+            }
+        }
+    }
+
+    private fun seedAccountTypes() {
+        val types = listOf("bank", "cash", "digital")
+        database.transaction {
+            types.forEach { typeName ->
+                if (accountTypesQueries.selectAccountTypeByName(typeName).executeAsOneOrNull() == null) {
+                    accountTypesQueries.insertAccountType(typeName)
+                }
             }
         }
     }
