@@ -26,7 +26,6 @@ import walletmonitor.composeapp.generated.resources.Res
 import walletmonitor.composeapp.generated.resources.divide
 import walletmonitor.composeapp.generated.resources.plus_minus
 
-@OptIn(ExperimentalMaterial3Api::class)
 @Composable
 fun AmountInputField(
     value: Double,
@@ -64,84 +63,86 @@ fun AmountInputField(
 
     val formattedValue = if (value == 0.0) "" else NumberUtils.formatNumber(value)
 
-    Column(modifier = modifier) {
-        CustomBox(
-            modifier = Modifier
-                .fillMaxWidth()
-                .clickable { viewModel.setShowKeypad(true) },
-            shadowColor = themeColor,
-            padding = 0.dp,
-            shadowElevation = if (isError) 6.dp else 4.dp
-        ) {
-            Box(
-                Modifier
-                    .background(backgroundColor)
-                    .padding(horizontal = 16.dp)
-                    .fillMaxWidth()
-                    .heightIn(min = 56.dp),
-                contentAlignment = Alignment.CenterStart
+    Box(modifier = modifier) {
+        Column(modifier = Modifier.fillMaxWidth()) {
+            CustomBox(
+                modifier = Modifier
+                    .fillMaxWidth(),
+                onClick = { viewModel.setShowKeypad(true) },
+                shadowColor = themeColor,
+                padding = 0.dp,
+                shadowElevation = if (isError) 6.dp else 4.dp
             ) {
-                Column {
-                    if (label != null) {
-                        Text(
-                            text = label,
-                            style = MaterialTheme.typography.labelSmall,
-                            color = themeColor
-                        )
-                    }
-                    
-                    Row(
-                        verticalAlignment = Alignment.CenterVertically,
-                        horizontalArrangement = Arrangement.spacedBy(4.dp)
-                    ) {
-                        if (state.symbolPosition == "prefix") {
+                Box(
+                    Modifier
+                        .background(backgroundColor)
+                        .padding(horizontal = 16.dp)
+                        .fillMaxWidth()
+                        .heightIn(min = 56.dp),
+                    contentAlignment = Alignment.CenterStart
+                ) {
+                    Column {
+                        if (label != null) {
                             Text(
-                                text = state.symbol,
-                                style = MaterialTheme.typography.bodyLarge,
-                                color = themeColor,
-                                fontWeight = FontWeight.Bold
+                                text = label,
+                                style = MaterialTheme.typography.labelSmall,
+                                color = themeColor
                             )
                         }
                         
-                        Text(
-                            text = formattedValue.ifEmpty { placeholder ?: "" },
-                            style = MaterialTheme.typography.bodyLarge,
-                            color = if (formattedValue.isEmpty()) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurface
-                        )
-                        
-                        if (state.symbolPosition == "suffix") {
+                        Row(
+                            verticalAlignment = Alignment.CenterVertically,
+                            horizontalArrangement = Arrangement.spacedBy(4.dp)
+                        ) {
+                            if (state.symbolPosition == "prefix") {
+                                Text(
+                                    text = state.symbol,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = themeColor,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
+                            
                             Text(
-                                text = state.symbol,
+                                text = formattedValue.ifEmpty { placeholder ?: "" },
                                 style = MaterialTheme.typography.bodyLarge,
-                                color = themeColor,
-                                fontWeight = FontWeight.Bold
+                                color = if (formattedValue.isEmpty()) MaterialTheme.colorScheme.onSurface.copy(alpha = 0.5f) else MaterialTheme.colorScheme.onSurface
                             )
+                            
+                            if (state.symbolPosition == "suffix") {
+                                Text(
+                                    text = state.symbol,
+                                    style = MaterialTheme.typography.bodyLarge,
+                                    color = themeColor,
+                                    fontWeight = FontWeight.Bold
+                                )
+                            }
                         }
                     }
                 }
             }
+            
+            if (isError && errorMessage != null) {
+                Text(
+                    text = errorMessage,
+                    color = errorColor,
+                    style = MaterialTheme.typography.bodySmall,
+                    modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+                )
+            }
         }
-        
-        if (isError && errorMessage != null) {
-            Text(
-                text = errorMessage,
-                color = errorColor,
-                style = MaterialTheme.typography.bodySmall,
-                modifier = Modifier.padding(start = 12.dp, top = 4.dp)
+
+        if (state.showKeypad) {
+            AmountKeypadBottomSheet(
+                viewModel = viewModel,
+                themeColor = themeColor,
+                onDismissRequest = { viewModel.setShowKeypad(false) },
+                onDone = {
+                    onValueChange(it)
+                    viewModel.setShowKeypad(false)
+                }
             )
         }
-    }
-
-    if (state.showKeypad) {
-        AmountKeypadBottomSheet(
-            viewModel = viewModel,
-            themeColor = themeColor,
-            onDismissRequest = { viewModel.setShowKeypad(false) },
-            onDone = {
-                onValueChange(it)
-                viewModel.setShowKeypad(false)
-            }
-        )
     }
 }
 
@@ -164,7 +165,7 @@ fun AmountKeypadBottomSheet(
                 shadowColor = themeColor,
                 shadowElevation = 4.dp,
                 backgroundColor = themeColor.copy(alpha = 0.05f),
-                padding = if (isSmall) 12.dp else 16.dp
+                padding = if (isSmall) 8.dp else 12.dp
             ) {
                 Column(
                     modifier = Modifier.fillMaxWidth(),

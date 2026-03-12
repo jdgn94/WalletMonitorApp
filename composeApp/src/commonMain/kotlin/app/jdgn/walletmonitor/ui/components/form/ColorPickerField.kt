@@ -13,7 +13,6 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.draw.clip
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.graphics.toArgb
-import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.jdgn.walletmonitor.ui.components.CustomBox
 import app.jdgn.walletmonitor.ui.components.dialogs.CustomDialog
@@ -49,8 +48,8 @@ fun ColorPickerField(
     Column(modifier = modifier) {
         CustomBox(
             modifier = Modifier
-                .fillMaxWidth()
-                .clickable { showDialog = true },
+                .fillMaxWidth(),
+            onClick = { showDialog = true },
             padding = 0.dp,
             shadowElevation = 4.dp,
             shadowColor = themeColor
@@ -115,44 +114,92 @@ fun ColorPickerField(
             header = {
                 Text(
                     text = "Pick a color", 
-                    style = MaterialTheme.typography.headlineSmall,
+                    style = MaterialTheme.typography.titleMedium,
                 )
             },
             body = {
-                Column(
-                    modifier = Modifier.fillMaxWidth(),
-                    horizontalAlignment = Alignment.CenterHorizontally,
-                    verticalArrangement = Arrangement.spacedBy(16.dp)
-                ) {
-                        HsvColorPicker(
-                            modifier = Modifier.size(220.dp).padding(8.dp),
-                            controller = controller,
-                            onColorChanged = { envelope ->
-                                tempColor = envelope.color
-                            },
-                            initialColor = currentColor
-                        )
-
-                        Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
-                            Text(
-                                text = "Intensity",
-                                style = MaterialTheme.typography.labelMedium,
-                                color = onThemeColor.copy(alpha = 0.7f)
+                BoxWithConstraints {
+                    val isLandscape = maxWidth > maxHeight
+                    
+                    if (isLandscape) {
+                        // En horizontal reorganizamos a Row para que no se corte
+                        Row(
+                            modifier = Modifier.fillMaxWidth().height(160.dp),
+                            horizontalArrangement = Arrangement.spacedBy(24.dp),
+                            verticalAlignment = Alignment.CenterVertically
+                        ) {
+                            HsvColorPicker(
+                                modifier = Modifier.size(140.dp),
+                                controller = controller,
+                                onColorChanged = { envelope ->
+                                    tempColor = envelope.color
+                                },
+                                initialColor = currentColor
                             )
-                            BrightnessSlider(
+
+                            Column(
+                                modifier = Modifier.weight(1f),
+                                verticalArrangement = Arrangement.spacedBy(8.dp)
+                            ) {
+                                Column {
+                                    Text(
+                                        text = "Intensity",
+                                        style = MaterialTheme.typography.labelSmall,
+                                    )
+                                    BrightnessSlider(
+                                        modifier = Modifier
+                                            .fillMaxWidth()
+                                            .height(24.dp),
+                                        controller = controller
+                                    )
+                                }
+
+                                Box(
+                                    modifier = Modifier
+                                        .size(32.dp)
+                                        .clip(CircleShape)
+                                        .background(tempColor)
+                                        .align(Alignment.CenterHorizontally)
+                                )
+                            }
+                        }
+                    } else {
+                        // En vertical se mantiene como estaba originalmente
+                        Column(
+                            modifier = Modifier.fillMaxWidth(),
+                            horizontalAlignment = Alignment.CenterHorizontally,
+                            verticalArrangement = Arrangement.spacedBy(16.dp)
+                        ) {
+                            HsvColorPicker(
+                                modifier = Modifier.size(200.dp).padding(8.dp),
+                                controller = controller,
+                                onColorChanged = { envelope ->
+                                    tempColor = envelope.color
+                                },
+                                initialColor = currentColor
+                            )
+
+                            Column(modifier = Modifier.fillMaxWidth().padding(horizontal = 8.dp)) {
+                                Text(
+                                    text = "Intensity",
+                                    style = MaterialTheme.typography.labelMedium,
+                                )
+                                BrightnessSlider(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(35.dp),
+                                    controller = controller
+                                )
+                            }
+
+                            Box(
                                 modifier = Modifier
-                                    .fillMaxWidth()
-                                    .height(35.dp),
-                                controller = controller
+                                    .size(50.dp)
+                                    .clip(CircleShape)
+                                    .background(tempColor)
                             )
                         }
-
-                        Box(
-                            modifier = Modifier
-                                .size(50.dp)
-                                .clip(CircleShape)
-                                .background(tempColor)
-                        )
+                    }
                 }
             },
             actions = {

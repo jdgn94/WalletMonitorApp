@@ -29,7 +29,7 @@ fun CustomDialog(
             modifier = Modifier
                 .fillMaxWidth()
                 .padding(horizontal = 24.dp),
-            padding = 0.dp, // Manejamos el padding internamente para separar secciones
+            padding = 0.dp,
             shadowElevation = 12.dp,
             shadowColor = shadowColor,
             backgroundColor = shadowColor.copy(alpha = 0.1f)

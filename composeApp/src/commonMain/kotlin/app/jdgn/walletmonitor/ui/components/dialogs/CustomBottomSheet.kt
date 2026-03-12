@@ -36,8 +36,8 @@ fun CustomBottomSheet(
                 .fillMaxWidth()
                 .verticalScroll(rememberScrollState())
                 .padding(horizontal = 24.dp)
-                .padding(bottom = 32.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+                .padding(bottom = 4.dp), // Mínimo padding al fondo
+            verticalArrangement = Arrangement.spacedBy(8.dp) // Espacio entre elementos reducido
         ) {
             // Cabecera
             header?.let {

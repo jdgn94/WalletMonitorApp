@@ -38,7 +38,7 @@ class AmountInputViewModel(
             walletRepository.getCurrencyById(targetCurrencyId).collect { currency ->
                 _state.value = _state.value.copy(
                     currency = currency,
-                    symbol = currency?.symbol ?: "$"
+                    symbol = currency?.symbol_native ?: "$"
                 )
             }
         }
