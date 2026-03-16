@@ -2,7 +2,11 @@
 
 package app.jdgn.walletmonitor.utils
 
+import kotlinx.datetime.LocalDate
+
 expect object DateUtils {
     fun formatDate(timestamp: Long, includeTime: Boolean = false): String
     fun getCurrentTimestamp(): Long
+    fun formatLocalDate(date: LocalDate, pattern: String = "dd/MM/yyyy"): String
+    fun today(): LocalDate
 }

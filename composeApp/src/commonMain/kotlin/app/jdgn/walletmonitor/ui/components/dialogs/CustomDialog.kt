@@ -32,7 +32,6 @@ fun CustomDialog(
             padding = 0.dp,
             shadowElevation = 12.dp,
             shadowColor = shadowColor,
-            backgroundColor = shadowColor.copy(alpha = 0.1f)
         ) {
             Column(
                 modifier = Modifier

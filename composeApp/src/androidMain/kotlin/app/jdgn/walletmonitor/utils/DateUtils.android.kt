@@ -2,7 +2,13 @@
 
 package app.jdgn.walletmonitor.utils
 
+import kotlinx.datetime.Clock
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.TimeZone
+import kotlinx.datetime.toJavaLocalDate
+import kotlinx.datetime.todayIn
 import java.text.SimpleDateFormat
+import java.time.format.DateTimeFormatter
 import java.util.Date
 import java.util.Locale
 
@@ -20,5 +26,18 @@ actual object DateUtils {
 
     actual fun getCurrentTimestamp(): Long {
         return System.currentTimeMillis()
+    }
+
+    actual fun formatLocalDate(date: LocalDate, pattern: String): String {
+        return try {
+            val formatter = DateTimeFormatter.ofPattern(pattern, Locale.getDefault())
+            date.toJavaLocalDate().format(formatter)
+        } catch (e: Exception) {
+            date.toString()
+        }
+    }
+
+    actual fun today(): LocalDate {
+        return Clock.System.todayIn(TimeZone.currentSystemDefault())
     }
 }

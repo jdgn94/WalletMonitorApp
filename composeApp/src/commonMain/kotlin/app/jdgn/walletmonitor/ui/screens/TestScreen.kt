@@ -1,8 +1,11 @@
 package app.jdgn.walletmonitor.ui.screens
 
 import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.rememberScrollState
+import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -12,10 +15,9 @@ import app.jdgn.walletmonitor.navigation.Navigator
 import app.jdgn.walletmonitor.ui.components.CustomBox
 import app.jdgn.walletmonitor.ui.components.CustomScaffold
 import app.jdgn.walletmonitor.ui.components.FadingScroll
-import app.jdgn.walletmonitor.ui.components.form.AmountInputField
-import app.jdgn.walletmonitor.ui.components.form.ColorPickerField
-import app.jdgn.walletmonitor.ui.components.form.CustomTextField
+import app.jdgn.walletmonitor.ui.components.form.*
 import app.jdgn.walletmonitor.viewmodel.TestViewModel
+import kotlinx.datetime.LocalDate
 import org.koin.compose.koinInject
 
 @Composable
@@ -24,9 +26,10 @@ fun TestScreen(navigator: Navigator) {
     val state by viewModel.state.collectAsState()
     
     var testAmount by remember { mutableStateOf(0.0) }
+    var selectedDates by remember { mutableStateOf(emptyList<LocalDate>()) }
 
     CustomScaffold(
-        title = "test",
+        title = "Test Components",
         navigator = navigator,
         topBarColor = state.componentColor
     ) { paddingValues ->
@@ -34,15 +37,49 @@ fun TestScreen(navigator: Navigator) {
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .verticalScroll(rememberScrollState())
                 .padding(16.dp),
-            verticalArrangement = Arrangement.spacedBy(16.dp)
+            verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            Text("Date Pickers", style = MaterialTheme.typography.titleMedium)
+            
+            DatePickerField(
+                label = "Report Range (Switchable)",
+                selectedDates = selectedDates,
+                onDatesSelected = { dates, formatted ->
+                    selectedDates = dates
+                },
+                isSwitchable = true,
+                initialMode = DateSelectionMode.RANGE,
+                customThemeColor = state.componentColor,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            DatePickerField(
+                label = "Select Month",
+                selectedDates = emptyList(),
+                onDatesSelected = { _, _ -> },
+                granularity = DateGranularity.MONTH,
+                customThemeColor = state.componentColor,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            DatePickerField(
+                label = "Select Year",
+                selectedDates = emptyList(),
+                onDatesSelected = { _, _ -> },
+                granularity = DateGranularity.YEAR,
+                customThemeColor = state.componentColor,
+                modifier = Modifier.fillMaxWidth()
+            )
+
+            Text("Input Fields", style = MaterialTheme.typography.titleMedium)
+
             AmountInputField(
                 value = testAmount,
                 onValueChange = { testAmount = it },
                 label = "Test Amount Input",
                 customThemeColor = state.componentColor,
-
                 modifier = Modifier.fillMaxWidth()
             )
 
@@ -67,7 +104,8 @@ fun TestScreen(navigator: Navigator) {
                 modifier = Modifier.fillMaxWidth()
             )
 
-            Text("Horizontal Fading")
+            Text("Scrolling Examples", style = MaterialTheme.typography.titleMedium)
+
             FadingScroll(
                 modifier = Modifier.fillMaxWidth().height(100.dp),
                 isVertical = false,
@@ -88,9 +126,8 @@ fun TestScreen(navigator: Navigator) {
                 }
             }
 
-            Text("Vertical Fading")
             FadingScroll(
-                modifier = Modifier.weight(1f).fillMaxWidth(),
+                modifier = Modifier.height(300.dp).fillMaxWidth(),
                 isVertical = true,
                 fadeLength = 40.dp,
                 padding = PaddingValues(vertical = 8.dp)

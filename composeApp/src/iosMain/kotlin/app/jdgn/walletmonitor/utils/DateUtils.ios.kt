@@ -2,12 +2,10 @@
 
 package app.jdgn.walletmonitor.utils
 
-import platform.Foundation.NSDate
-import platform.Foundation.NSDateFormatter
-import platform.Foundation.NSLocale
-import platform.Foundation.autoupdatingCurrentLocale
-import platform.Foundation.dateWithTimeIntervalSince1970
-import platform.Foundation.timeIntervalSince1970
+import kotlinx.datetime.LocalDate
+import kotlinx.datetime.Month
+import kotlinx.datetime.toNSDateComponents
+import platform.Foundation.*
 
 actual object DateUtils {
     actual fun formatDate(timestamp: Long, includeTime: Boolean): String {
@@ -24,5 +22,33 @@ actual object DateUtils {
 
     actual fun getCurrentTimestamp(): Long {
         return (NSDate().timeIntervalSince1970 * 1000).toLong()
+    }
+
+    actual fun formatLocalDate(date: LocalDate, pattern: String): String {
+        return try {
+            val calendar = NSCalendar.currentCalendar
+            val components = date.toNSDateComponents()
+            val nsDate = calendar.dateFromComponents(components) ?: return date.toString()
+            val formatter = NSDateFormatter()
+            formatter.dateFormat = pattern
+            formatter.locale = NSLocale.autoupdatingCurrentLocale
+            formatter.stringFromDate(nsDate)
+        } catch (e: Exception) {
+            date.toString()
+        }
+    }
+
+    actual fun today(): LocalDate {
+        val calendar = NSCalendar.currentCalendar
+        val now = NSDate()
+        val components = calendar.components(
+            NSCalendarUnitYear or NSCalendarUnitMonth or NSCalendarUnitDay,
+            fromDate = now
+        )
+        return LocalDate(
+            year = components.year.toInt(),
+            month = Month(components.month.toInt()),
+            day = components.day.toInt()
+        )
     }
 }
