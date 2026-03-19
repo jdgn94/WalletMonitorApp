@@ -7,6 +7,8 @@ import app.jdgn.walletmonitor.data.local.SettingsManager
 import app.jdgn.walletmonitor.data.local.WalletRepository
 import app.jdgn.walletmonitor.database.AppDatabase
 import app.jdgn.walletmonitor.viewmodel.AmountInputViewModel
+import app.jdgn.walletmonitor.viewmodel.ChartViewModel
+import app.jdgn.walletmonitor.viewmodel.DatePickerViewModel
 import app.jdgn.walletmonitor.viewmodel.HomeViewModel
 import app.jdgn.walletmonitor.viewmodel.SettingsViewModel
 import app.jdgn.walletmonitor.viewmodel.TestViewModel
@@ -45,6 +47,8 @@ fun commonModule() = module {
     factory { WalletDetailsViewModel() }
     factory { TestViewModel() }
     factory { AmountInputViewModel(get(), get()) }
+    factory { ChartViewModel() }
+    factory { DatePickerViewModel() }
 }
 
 expect fun platformModule(): Module

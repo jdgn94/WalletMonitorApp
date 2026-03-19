@@ -13,12 +13,10 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.jdgn.walletmonitor.navigation.Navigator
-import app.jdgn.walletmonitor.ui.components.BorderType
-import app.jdgn.walletmonitor.ui.components.CustomBox
-import app.jdgn.walletmonitor.ui.components.CustomScaffold
-import app.jdgn.walletmonitor.ui.components.FadingScroll
-import app.jdgn.walletmonitor.ui.components.ShadowType
+import app.jdgn.walletmonitor.ui.components.*
 import app.jdgn.walletmonitor.ui.components.form.*
+import app.jdgn.walletmonitor.viewmodel.ChartDataSet
+import app.jdgn.walletmonitor.viewmodel.ChartPoint
 import app.jdgn.walletmonitor.viewmodel.TestViewModel
 import kotlinx.datetime.LocalDate
 import org.koin.compose.koinInject
@@ -30,6 +28,44 @@ fun TestScreen(navigator: Navigator) {
     
     var testAmount by remember { mutableStateOf(0.0) }
     var selectedDates by remember { mutableStateOf(emptyList<LocalDate>()) }
+
+    val chartData = remember(state.componentColor) {
+        listOf(
+            ChartDataSet(
+                name = "Ingresos",
+                color = Color(0xFF4CAF50),
+                points = listOf(
+                    ChartPoint(0f, 100f, "Ene"),
+                    ChartPoint(1f, 150f, "Feb"),
+                    ChartPoint(2f, 120f, "Mar"),
+                    ChartPoint(3f, 200f, "Abr"),
+                    ChartPoint(4f, 180f, "May"),
+                )
+            ),
+            ChartDataSet(
+                name = "Gastos",
+                color = Color(0xFFF44336),
+                points = listOf(
+                    ChartPoint(0f, 80f, "Ene"),
+                    ChartPoint(1f, 160f, "Feb"),
+                    ChartPoint(2f, 90f, "Mar"),
+                    ChartPoint(3f, 150f, "Abr"),
+                    ChartPoint(4f, 210f, "May"),
+                )
+            ),
+            ChartDataSet(
+                name = "Balance",
+                color = state.componentColor,
+                points = listOf(
+                    ChartPoint(0f, 20f, "Ene"),
+                    ChartPoint(1f, -10f, "Feb"),
+                    ChartPoint(2f, 30f, "Mar"),
+                    ChartPoint(3f, 50f, "Abr"),
+                    ChartPoint(4f, -30f, "May"),
+                )
+            )
+        )
+    }
 
     CustomScaffold(
         title = "Test Components",
@@ -44,6 +80,14 @@ fun TestScreen(navigator: Navigator) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            Text("Interactive Custom Chart", style = MaterialTheme.typography.titleMedium)
+            
+            CustomChart(
+                modifier = Modifier.fillMaxWidth(),
+                title = "Estadísticas Mensuales",
+                dataSets = chartData
+            )
+
             Text("Custom Box Variants", style = MaterialTheme.typography.titleMedium)
 
             Row(
