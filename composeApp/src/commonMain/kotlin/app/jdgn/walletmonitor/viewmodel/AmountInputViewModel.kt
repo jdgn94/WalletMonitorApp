@@ -1,5 +1,7 @@
 package app.jdgn.walletmonitor.viewmodel
 
+import androidx.lifecycle.ViewModel
+import androidx.lifecycle.viewModelScope
 import app.jdgn.walletmonitor.data.local.SettingsManager
 import app.jdgn.walletmonitor.data.local.StorageKeys
 import app.jdgn.walletmonitor.data.local.WalletRepository
@@ -28,7 +30,8 @@ class AmountInputViewModel(
     val state: StateFlow<AmountInputState> = _state.asStateFlow()
 
     fun loadCurrency(currencyId: Long?) {
-        val defaultCurrencyId = settingsManager.getInt(StorageKeys.DEFAULT_CURRENCY_ID, 1).toLong()
+        val savedId = settingsManager.getString(StorageKeys.DEFAULT_CURRENCY_ID, "1")
+        val defaultCurrencyId = savedId.toLongOrNull() ?: 1L
         val targetCurrencyId = currencyId ?: defaultCurrencyId
         val symbolPosition = settingsManager.getString(StorageKeys.CURRENCY_SYMBOL_POSITION, "prefix")
 

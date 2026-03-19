@@ -10,11 +10,14 @@ import androidx.compose.material3.Text
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
+import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.unit.dp
 import app.jdgn.walletmonitor.navigation.Navigator
+import app.jdgn.walletmonitor.ui.components.BorderType
 import app.jdgn.walletmonitor.ui.components.CustomBox
 import app.jdgn.walletmonitor.ui.components.CustomScaffold
 import app.jdgn.walletmonitor.ui.components.FadingScroll
+import app.jdgn.walletmonitor.ui.components.ShadowType
 import app.jdgn.walletmonitor.ui.components.form.*
 import app.jdgn.walletmonitor.viewmodel.TestViewModel
 import kotlinx.datetime.LocalDate
@@ -41,6 +44,78 @@ fun TestScreen(navigator: Navigator) {
                 .padding(16.dp),
             verticalArrangement = Arrangement.spacedBy(24.dp)
         ) {
+            Text("Custom Box Variants", style = MaterialTheme.typography.titleMedium)
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // External Shadow (Default)
+                CustomBox(
+                    modifier = Modifier.weight(1f),
+                    shadowType = ShadowType.External,
+                    shadowElevation = 8.dp,
+                    shadowColor = state.componentColor,
+                    borderColor = state.componentColor,
+                    borderWidth = 1.dp,
+                    borderType = BorderType.Solid
+                ) {
+                    Text("External Shadow + Solid Border", style = MaterialTheme.typography.bodySmall)
+                }
+
+                // Internal Shadow (Inset)
+                CustomBox(
+                    modifier = Modifier.weight(1f),
+                    shadowType = ShadowType.Internal,
+                    shadowElevation = 10.dp,
+                    shadowColor = state.componentColor,
+                    backgroundColor = state.componentColor.copy(alpha = 0.1f),
+                    onClick = {}
+                ) {
+                    Text("Internal Shadow (Hundido)", style = MaterialTheme.typography.bodySmall)
+                }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(16.dp)
+            ) {
+                // Dotted Border
+                CustomBox(
+                    modifier = Modifier.weight(1f),
+                    borderWidth = 2.dp,
+                    borderColor = state.componentColor,
+                    borderType = BorderType.Dotted,
+                    shadowElevation = 0.dp
+                ) {
+                    Text("Dotted Border", style = MaterialTheme.typography.bodySmall)
+                }
+
+                // Dashed Border
+                CustomBox(
+                    modifier = Modifier.weight(1f),
+                    borderWidth = 2.dp,
+                    borderColor = state.componentColor,
+                    borderType = BorderType.Dashed,
+                    shadowElevation = 0.dp
+                ) {
+                    Text("Dashed Border", style = MaterialTheme.typography.bodySmall)
+                }
+            }
+
+            // Double Border + Internal Shadow
+            CustomBox(
+                modifier = Modifier.fillMaxWidth(),
+                borderWidth = 4.dp,
+                borderColor = state.componentColor,
+                borderType = BorderType.Double,
+                shadowType = ShadowType.Internal,
+                shadowElevation = 6.dp,
+                backgroundColor = state.componentColor.copy(alpha = 0.1f)
+            ) {
+                Text("Double Border + Internal Shadow Combo", style = MaterialTheme.typography.bodyMedium)
+            }
+
             Text("Date Pickers", style = MaterialTheme.typography.titleMedium)
             
             DatePickerField(
