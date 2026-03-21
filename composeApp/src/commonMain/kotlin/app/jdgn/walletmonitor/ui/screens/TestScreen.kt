@@ -11,6 +11,7 @@ import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
+import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.jdgn.walletmonitor.navigation.Navigator
 import app.jdgn.walletmonitor.ui.components.*
@@ -21,6 +22,8 @@ import app.jdgn.walletmonitor.viewmodel.TestViewModel
 import kotlinx.datetime.LocalDate
 import org.koin.compose.koinInject
 
+data class TestCurrency(val code: String, val name: String, val symbol: String)
+
 @Composable
 fun TestScreen(navigator: Navigator) {
     val viewModel: TestViewModel = koinInject()
@@ -28,6 +31,31 @@ fun TestScreen(navigator: Navigator) {
     
     var testAmount by remember { mutableStateOf(0.0) }
     var selectedDates by remember { mutableStateOf(emptyList<LocalDate>()) }
+
+    val currencies = remember {
+        listOf(
+            TestCurrency("USD", "US Dollar", "$"),
+            TestCurrency("EUR", "Euro", "€"),
+            TestCurrency("GBP", "British Pound", "£"),
+            TestCurrency("JPY", "Japanese Yen", "¥"),
+            TestCurrency("MXN", "Mexican Peso", "$"),
+            TestCurrency("ARS", "Argentine Peso", "$"),
+            TestCurrency("BRL", "Brazilian Real", "R$"),
+            TestCurrency("CAD", "Canadian Dollar", "$"),
+            TestCurrency("AUD", "Australian Dollar", "$"),
+            TestCurrency("CHF", "Swiss Franc", "Fr"),
+            TestCurrency("CNY", "Chinese Yuan", "¥"),
+            TestCurrency("INR", "Indian Rupee", "₹"),
+            TestCurrency("RUB", "Russian Ruble", "₽"),
+            TestCurrency("ZAR", "South African Rand", "R"),
+            TestCurrency("TRY", "Turkish Lira", "₺"),
+            TestCurrency("KRW", "South Korean Won", "₩"),
+            TestCurrency("BTC", "Bitcoin", "₿"),
+            TestCurrency("ETH", "Ethereum", "Ξ"),
+            TestCurrency("USDT", "Tether", "₮")
+        )
+    }
+    var selectedCurrency by remember { mutableStateOf<TestCurrency?>(null) }
 
     val chartData = remember(state.componentColor) {
         listOf(
@@ -94,7 +122,6 @@ fun TestScreen(navigator: Navigator) {
                 modifier = Modifier.fillMaxWidth(),
                 horizontalArrangement = Arrangement.spacedBy(16.dp)
             ) {
-                // External Shadow (Default)
                 CustomBox(
                     modifier = Modifier.weight(1f),
                     shadowType = ShadowType.External,
@@ -107,7 +134,6 @@ fun TestScreen(navigator: Navigator) {
                     Text("External Shadow + Solid Border", style = MaterialTheme.typography.bodySmall)
                 }
 
-                // Internal Shadow (Inset)
                 CustomBox(
                     modifier = Modifier.weight(1f),
                     shadowType = ShadowType.Internal,
@@ -120,74 +146,35 @@ fun TestScreen(navigator: Navigator) {
                 }
             }
 
-            Row(
-                modifier = Modifier.fillMaxWidth(),
-                horizontalArrangement = Arrangement.spacedBy(16.dp)
-            ) {
-                // Dotted Border
-                CustomBox(
-                    modifier = Modifier.weight(1f),
-                    borderWidth = 2.dp,
-                    borderColor = state.componentColor,
-                    borderType = BorderType.Dotted,
-                    shadowElevation = 0.dp
-                ) {
-                    Text("Dotted Border", style = MaterialTheme.typography.bodySmall)
-                }
+            Text("Selectors & Forms", style = MaterialTheme.typography.titleMedium)
 
-                // Dashed Border
-                CustomBox(
-                    modifier = Modifier.weight(1f),
-                    borderWidth = 2.dp,
-                    borderColor = state.componentColor,
-                    borderType = BorderType.Dashed,
-                    shadowElevation = 0.dp
-                ) {
-                    Text("Dashed Border", style = MaterialTheme.typography.bodySmall)
-                }
-            }
+            SelectorField(
+                label = "Currency",
+                items = currencies,
+                selectedItem = selectedCurrency,
+                onItemSelected = { selectedCurrency = it },
+                itemLabel = { "${it.code} - ${it.name}" },
+                itemIcon = { currency ->
+                    Text(
+                        text = currency.symbol,
+                        style = MaterialTheme.typography.bodyMedium,
+                        fontWeight = FontWeight.Bold,
+                        color = state.componentColor
+                    )
+                },
+                placeholder = "Select a currency",
+                customThemeColor = state.componentColor,
+                modifier = Modifier.fillMaxWidth()
+            )
 
-            // Double Border + Internal Shadow
-            CustomBox(
-                modifier = Modifier.fillMaxWidth(),
-                borderWidth = 4.dp,
-                borderColor = state.componentColor,
-                borderType = BorderType.Double,
-                shadowType = ShadowType.Internal,
-                shadowElevation = 6.dp,
-                backgroundColor = state.componentColor.copy(alpha = 0.1f)
-            ) {
-                Text("Double Border + Internal Shadow Combo", style = MaterialTheme.typography.bodyMedium)
-            }
-
-            Text("Date Pickers", style = MaterialTheme.typography.titleMedium)
-            
             DatePickerField(
                 label = "Report Range (Switchable)",
                 selectedDates = selectedDates,
-                onDatesSelected = { dates, formatted ->
+                onDatesSelected = { dates, _ ->
                     selectedDates = dates
                 },
                 isSwitchable = true,
                 initialMode = DateSelectionMode.RANGE,
-                customThemeColor = state.componentColor,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            DatePickerField(
-                label = "Select Month",
-                selectedDates = emptyList(),
-                onDatesSelected = { _, _ -> },
-                granularity = DateGranularity.MONTH,
-                customThemeColor = state.componentColor,
-                modifier = Modifier.fillMaxWidth()
-            )
-
-            DatePickerField(
-                label = "Select Year",
-                selectedDates = emptyList(),
-                onDatesSelected = { _, _ -> },
-                granularity = DateGranularity.YEAR,
                 customThemeColor = state.componentColor,
                 modifier = Modifier.fillMaxWidth()
             )

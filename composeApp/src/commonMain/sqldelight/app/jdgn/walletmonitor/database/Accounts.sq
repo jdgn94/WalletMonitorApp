@@ -2,7 +2,7 @@ CREATE TABLE accounts (
     id INTEGER NOT NULL PRIMARY KEY AUTOINCREMENT,
     bank_id INTEGER,
     name TEXT NOT NULL,
-    account_id TEXT, -- Número de cuenta o identificador dado por el usuario
+    icon TEXT NOT NULL, -- Nombre del icono o recurso
     account_type_id INTEGER NOT NULL,
     currency_id INTEGER NOT NULL,
     color TEXT NOT NULL, -- String max 9 (ej: #FFFFFFFF)
@@ -22,12 +22,12 @@ selectAccountById:
 SELECT * FROM accounts WHERE id = ?;
 
 insertAccount:
-INSERT INTO accounts(bank_id, name, account_id, account_type_id, currency_id, color, amount)
+INSERT INTO accounts(bank_id, name, icon, account_type_id, currency_id, color, amount)
 VALUES (?, ?, ?, ?, ?, ?, ?);
 
 updateAccount:
 UPDATE accounts
-SET bank_id = ?, name = ?, account_id = ?, account_type_id = ?, currency_id = ?, color = ?, amount = ?, updated_at = CURRENT_TIMESTAMP
+SET bank_id = ?, name = ?, icon = ?, account_type_id = ?, currency_id = ?, color = ?, amount = ?, updated_at = CURRENT_TIMESTAMP
 WHERE id = ?;
 
 deleteAccount:

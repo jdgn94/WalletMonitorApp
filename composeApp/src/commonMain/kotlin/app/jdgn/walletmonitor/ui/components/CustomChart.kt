@@ -50,8 +50,8 @@ fun CustomChart(
 
     CustomBox(
         modifier = modifier.fillMaxWidth(),
-        shadowType = ShadowType.Internal,
-        shadowElevation = 4.dp,
+        shadowType = ShadowType.External,
+        shadowElevation = 8.dp,
         backgroundColor = MaterialTheme.colorScheme.surface
     ) {
         Column(modifier = Modifier.padding(8.dp)) {
