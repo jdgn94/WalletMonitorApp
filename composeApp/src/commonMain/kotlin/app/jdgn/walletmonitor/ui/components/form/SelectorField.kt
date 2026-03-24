@@ -1,12 +1,13 @@
 package app.jdgn.walletmonitor.ui.components.form
 
 import androidx.compose.foundation.background
-import androidx.compose.foundation.clickable
 import androidx.compose.foundation.layout.*
-import androidx.compose.foundation.lazy.LazyColumn
-import androidx.compose.foundation.lazy.items
+import androidx.compose.foundation.lazy.grid.GridCells
+import androidx.compose.foundation.lazy.grid.LazyVerticalGrid
+import androidx.compose.foundation.lazy.grid.items
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.ArrowDropDown
+import androidx.compose.material.icons.filled.Search
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
@@ -16,7 +17,9 @@ import androidx.compose.ui.graphics.vector.ImageVector
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
 import app.jdgn.walletmonitor.ui.components.CustomBox
+import app.jdgn.walletmonitor.ui.components.FadingScroll
 import app.jdgn.walletmonitor.ui.components.dialogs.CustomDialog
+import androidx.compose.foundation.rememberScrollState
 
 @Composable
 fun <T> SelectorField(
@@ -26,15 +29,21 @@ fun <T> SelectorField(
     onItemSelected: (T) -> Unit,
     itemLabel: (T) -> String,
     modifier: Modifier = Modifier,
+    searchFilter: (T) -> String = itemLabel,
     itemIcon: (@Composable (T) -> Unit)? = null,
+    customItemContent: (@Composable (T) -> Unit)? = null,
     placeholder: String? = null,
     isError: Boolean = false,
     errorMessage: String? = null,
     leftIcon: ImageVector? = null,
     customThemeColor: Color? = null,
-    customContainerColor: Color? = null
+    customContainerColor: Color? = null,
+    showSearch: Boolean = true,
+    itemShadowColor: ((T) -> Color)? = null,
+    itemSelectedBackgroundColor: ((T) -> Color)? = null
 ) {
     var showDialog by remember { mutableStateOf(false) }
+    var searchQuery by remember { mutableStateOf("") }
     
     val themeColor = customThemeColor ?: MaterialTheme.colorScheme.primary
     val backgroundColor = customContainerColor ?: MaterialTheme.colorScheme.surface
@@ -43,10 +52,18 @@ fun <T> SelectorField(
 
     val displayText = selectedItem?.let { itemLabel(it) } ?: placeholder ?: ""
 
+    val filteredItems = remember(items, searchQuery) {
+        if (searchQuery.isBlank()) items
+        else items.filter { searchFilter(it).contains(searchQuery, ignoreCase = true) }
+    }
+
     Column(modifier = modifier) {
         CustomBox(
             modifier = Modifier.fillMaxWidth(),
-            onClick = { showDialog = true },
+            onClick = { 
+                searchQuery = ""
+                showDialog = true 
+            },
             padding = 0.dp,
             shadowElevation = if (isError) 6.dp else 4.dp,
             shadowColor = shadowColor
@@ -120,51 +137,91 @@ fun <T> SelectorField(
             shadowColor = themeColor,
             backgroundColor = backgroundColor,
             header = {
-                Text(
-                    text = "Select $label",
-                    style = MaterialTheme.typography.titleLarge,
-                    fontWeight = FontWeight.Bold,
-                    color = themeColor
-                )
+                Column(verticalArrangement = Arrangement.spacedBy(12.dp)) {
+                    Text(
+                        text = "Select $label",
+                        style = MaterialTheme.typography.titleLarge,
+                        fontWeight = FontWeight.Bold,
+                        color = themeColor
+                    )
+                    
+                    if (showSearch) {
+                        CustomTextField(
+                            value = searchQuery,
+                            onValueChange = { searchQuery = it },
+                            modifier = Modifier.fillMaxWidth(),
+                            placeholder = "Search...",
+                            leftIcon = Icons.Default.Search,
+                            customThemeColor = themeColor,
+                            clearable = true
+                        )
+                    }
+                }
             },
             body = {
-                LazyColumn(
-                    modifier = Modifier.fillMaxWidth().heightIn(max = 400.dp),
-                    verticalArrangement = Arrangement.spacedBy(8.dp)
-                ) {
-                    items(items) { item ->
-                        val isSelected = item == selectedItem
-                        
-                        CustomBox(
-                            modifier = Modifier.fillMaxWidth(),
-                            onClick = {
-                                onItemSelected(item)
-                                showDialog = false
-                            },
-                            backgroundColor = if (isSelected) themeColor.copy(alpha = 0.1f) else backgroundColor,
-                            shadowElevation = if (isSelected) 4.dp else 0.dp,
-                            shadowColor = themeColor,
-                            borderColor = if (isSelected) themeColor else Color.Transparent,
-                            borderWidth = if (isSelected) 1.dp else 0.dp,
-                            padding = 12.dp
+                BoxWithConstraints(modifier = Modifier.fillMaxWidth()) {
+                    val columns = if (maxWidth < 400.dp) 2 else 3
+                    
+                    FadingScroll(
+                        modifier = Modifier.fillMaxWidth(),
+                        fadeLength = 20.dp
+                    ) { _ ->
+                        LazyVerticalGrid(
+                            columns = GridCells.Fixed(columns),
+                            modifier = Modifier
+                                .fillMaxWidth()
+                                .heightIn(max = 400.dp),
+                            contentPadding = PaddingValues(16.dp),
+                            horizontalArrangement = Arrangement.spacedBy(8.dp),
+                            verticalArrangement = Arrangement.spacedBy(8.dp)
                         ) {
-                            Row(
-                                modifier = Modifier.fillMaxWidth(),
-                                verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(16.dp)
-                            ) {
-                                if (itemIcon != null) {
-                                    Box(modifier = Modifier.size(24.dp)) {
-                                        itemIcon(item)
+                            items(filteredItems) { item ->
+                                val isSelected = item == selectedItem
+                                val currentItemShadowColor = itemShadowColor?.invoke(item) ?: themeColor
+                                val currentItemBGColor = if (isSelected) {
+                                    itemSelectedBackgroundColor?.invoke(item) ?: themeColor.copy(alpha = 0.1f)
+                                } else {
+                                    backgroundColor
+                                }
+
+                                CustomBox(
+                                    modifier = Modifier
+                                        .fillMaxWidth()
+                                        .height(110.dp),
+                                    onClick = {
+                                        onItemSelected(item)
+                                        showDialog = false
+                                    },
+                                    backgroundColor = currentItemBGColor,
+                                    shadowElevation = 4.dp,
+                                    shadowColor = currentItemShadowColor,
+                                    borderColor = if (isSelected) currentItemShadowColor else Color.Transparent,
+                                    borderWidth = if (isSelected) 1.dp else 0.dp,
+                                    padding = 8.dp
+                                ) {
+                                    if (customItemContent != null) {
+                                        customItemContent(item)
+                                    } else {
+                                        Row(
+                                            modifier = Modifier.fillMaxSize(),
+                                            verticalAlignment = Alignment.CenterVertically,
+                                            horizontalArrangement = Arrangement.spacedBy(8.dp)
+                                        ) {
+                                            if (itemIcon != null) {
+                                                Box(modifier = Modifier.size(24.dp)) {
+                                                    itemIcon(item)
+                                                }
+                                            }
+                                            
+                                            Text(
+                                                text = itemLabel(item),
+                                                style = MaterialTheme.typography.bodyMedium,
+                                                color = if (isSelected) themeColor else MaterialTheme.colorScheme.onSurface,
+                                                fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
+                                            )
+                                        }
                                     }
                                 }
-                                
-                                Text(
-                                    text = itemLabel(item),
-                                    style = MaterialTheme.typography.bodyLarge,
-                                    color = if (isSelected) themeColor else MaterialTheme.colorScheme.onSurface,
-                                    fontWeight = if (isSelected) FontWeight.Bold else FontWeight.Normal
-                                )
                             }
                         }
                     }

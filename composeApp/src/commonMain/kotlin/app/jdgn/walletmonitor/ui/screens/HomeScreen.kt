@@ -1,7 +1,9 @@
 package app.jdgn.walletmonitor.ui.screens
 
 import androidx.compose.foundation.layout.*
-import androidx.compose.material3.Text
+import androidx.compose.material.icons.Icons
+import androidx.compose.material.icons.filled.Add
+import androidx.compose.material3.*
 import androidx.compose.runtime.Composable
 import androidx.compose.runtime.LaunchedEffect
 import androidx.compose.runtime.collectAsState
@@ -26,18 +28,26 @@ fun HomeScreen(navigator: Navigator) {
     }
 
     CustomScaffold(
-        title = "Home",
-        navigator = navigator
+        title = "Wallet Monitor",
+        navigator = navigator,
+        rightContent = {
+            IconButton(onClick = { navigator.navigateTo(Screen.CreateAccount) }) {
+                Icon(Icons.Default.Add, contentDescription = "Add Account")
+            }
+        }
     ) { paddingValues ->
         Column(
             modifier = Modifier
                 .fillMaxSize()
                 .padding(paddingValues)
+                .padding(16.dp),
+            verticalArrangement = Arrangement.spacedBy(16.dp)
         ) {
             CustomBox(
-                onClick = { navigator.navigateTo(Screen.Test) }
+                onClick = { navigator.navigateTo(Screen.Test) },
+                modifier = Modifier.fillMaxWidth()
             ) { 
-                Text("Test page") 
+                Text("Go to Test Page") 
             }
             
             if (state.isLoading) {
@@ -45,7 +55,19 @@ fun HomeScreen(navigator: Navigator) {
                     modifier = Modifier.fillMaxSize(),
                     contentAlignment = Alignment.Center
                 ) {
-                    Text("Loading...")
+                    CircularProgressIndicator()
+                }
+            } else if (state.wallets.isEmpty()) {
+                Box(
+                    modifier = Modifier.fillMaxSize(),
+                    contentAlignment = Alignment.Center
+                ) {
+                    Column(horizontalAlignment = Alignment.CenterHorizontally) {
+                        Text("No accounts yet")
+                        Button(onClick = { navigator.navigateTo(Screen.CreateAccount) }) {
+                            Text("Create your first account")
+                        }
+                    }
                 }
             }
         }

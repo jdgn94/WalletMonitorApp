@@ -8,6 +8,9 @@ import app.jdgn.walletmonitor.database.AppDatabase
 import app.jdgn.walletmonitor.database.Banks
 import app.jdgn.walletmonitor.database.Countries
 import app.jdgn.walletmonitor.database.Currencies
+import app.jdgn.walletmonitor.database.Account_types
+import app.jdgn.walletmonitor.database.Accounts
+import app.jdgn.walletmonitor.database.SelectAllCurrenciesWithType
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.IO
 
@@ -37,6 +40,12 @@ class WalletRepository(database: AppDatabase) {
             .mapToList(Dispatchers.IO)
     }
 
+    fun getAllCurrenciesWithType(): Flow<List<SelectAllCurrenciesWithType>> {
+        return currenciesQueries.selectAllCurrenciesWithType()
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+    }
+
     fun getCurrencyById(id: Long): Flow<Currencies?> {
         return currenciesQueries.selectCurrencyById(id)
             .asFlow()
@@ -47,5 +56,29 @@ class WalletRepository(database: AppDatabase) {
         return banksQueries.selectAllBanks()
             .asFlow()
             .mapToList(Dispatchers.IO)
+    }
+
+    fun getAllAccountTypes(): Flow<List<Account_types>> {
+        return accountTypesQueries.selectAllAccountTypes()
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+    }
+
+    fun getAllAccounts(): Flow<List<Accounts>> {
+        return accountsQueries.selectAllAccounts()
+            .asFlow()
+            .mapToList(Dispatchers.IO)
+    }
+
+    fun insertAccount(
+        bankId: Long?,
+        name: String,
+        icon: String,
+        accountTypeId: Long,
+        currencyId: Long,
+        color: String,
+        amount: Double
+    ) {
+        accountsQueries.insertAccount(bankId, name, icon, accountTypeId, currencyId, color, amount)
     }
 }

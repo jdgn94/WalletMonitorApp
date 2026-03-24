@@ -5,6 +5,7 @@ sealed class Screen {
 
     data object Test : Screen()
     data object Settings : Screen()
+    data object CreateAccount : Screen()
     data class WalletDetails(val walletId: String) : Screen()
     
     // Para agregar una página nueva, solo añade un 'data object' o 'data class' aquí

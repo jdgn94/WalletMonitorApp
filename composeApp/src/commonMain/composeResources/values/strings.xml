@@ -4,4 +4,15 @@
     <string name="exit_app_message">Are you sure you want to exit the application?</string>
     <string name="yes">Yes</string>
     <string name="no">No</string>
+
+    <!-- Account Types -->
+    <string name="account_type_bank">Bank Account</string>
+    <string name="account_type_cash">Cash</string>
+    <string name="account_type_digital">Digital Wallet</string>
+
+    <!-- Currency Types -->
+    <string name="currency_type_fiat">Fiat</string>
+    <string name="currency_type_metal">Metal</string>
+    <string name="currency_type_crypto">Crypto</string>
+
 </resources>

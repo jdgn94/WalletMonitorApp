@@ -1,7 +1,18 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
     <string name="exit_app_title">Salir de la aplicación</string>
-    <string name="exit_app_message">¿Estás seguro de que deseas salir de la aplicación?</string>
+    <string name="exit_app_message">¿Estás seguro de que quieres salir de la aplicación?</string>
     <string name="yes">Sí</string>
     <string name="no">No</string>
+
+    <!-- Account Types -->
+    <string name="account_type_bank">Cuenta Bancaria</string>
+    <string name="account_type_cash">Efectivo</string>
+    <string name="account_type_digital">Billetera Digital</string>
+
+    <!-- Currency Types -->
+    <string name="currency_type_fiat">Fiat</string>
+    <string name="currency_type_metal">Metal</string>
+    <string name="currency_type_crypto">Cripto</string>
+
 </resources>

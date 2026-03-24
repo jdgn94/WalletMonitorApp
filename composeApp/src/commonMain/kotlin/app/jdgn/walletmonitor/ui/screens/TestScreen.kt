@@ -5,6 +5,8 @@ import androidx.compose.foundation.rememberScrollState
 import androidx.compose.foundation.verticalScroll
 import androidx.compose.material.icons.Icons
 import androidx.compose.material.icons.filled.Search
+import androidx.compose.material3.Button
+import androidx.compose.material3.ButtonDefaults
 import androidx.compose.material3.MaterialTheme
 import androidx.compose.material3.Text
 import androidx.compose.runtime.*
@@ -13,6 +15,7 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.unit.dp
+import androidx.compose.ui.unit.sp
 import app.jdgn.walletmonitor.navigation.Navigator
 import app.jdgn.walletmonitor.ui.components.*
 import app.jdgn.walletmonitor.ui.components.form.*
@@ -28,6 +31,7 @@ data class TestCurrency(val code: String, val name: String, val symbol: String)
 fun TestScreen(navigator: Navigator) {
     val viewModel: TestViewModel = koinInject()
     val state by viewModel.state.collectAsState()
+    val notification = rememberNotification()
     
     var testAmount by remember { mutableStateOf(0.0) }
     var selectedDates by remember { mutableStateOf(emptyList<LocalDate>()) }
@@ -115,6 +119,41 @@ fun TestScreen(navigator: Navigator) {
                 title = "Estadísticas Mensuales",
                 dataSets = chartData
             )
+
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = { notification.show("Success", "Operation completed!", NotificationType.SUCCESS) },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF4CAF50)),
+                    modifier = Modifier.weight(1f)
+                ) { Text("Success", fontSize = 10.sp) }
+
+                Button(
+                    onClick = { notification.show("Error", "Something went wrong", NotificationType.ERROR) },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFF44336)),
+                    modifier = Modifier.weight(1f)
+                ) { Text("Error", fontSize = 10.sp) }
+            }
+
+            Row(
+                modifier = Modifier.fillMaxWidth(),
+                horizontalArrangement = Arrangement.spacedBy(8.dp)
+            ) {
+                Button(
+                    onClick = { notification.show("Warning", "Check your balance", NotificationType.WARNING) },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFFFF9800)),
+                    modifier = Modifier.weight(1f)
+                ) { Text("Warning", fontSize = 10.sp) }
+
+                Button(
+                    onClick = { notification.show("Info", "New update available", NotificationType.INFO) },
+                    colors = ButtonDefaults.buttonColors(containerColor = Color(0xFF2196F3)),
+                    modifier = Modifier.weight(1f)
+                ) { Text("Info", fontSize = 10.sp) }
+            }
 
             Text("Custom Box Variants", style = MaterialTheme.typography.titleMedium)
 

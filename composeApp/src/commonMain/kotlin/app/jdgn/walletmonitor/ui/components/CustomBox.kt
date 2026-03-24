@@ -1,5 +1,6 @@
 package app.jdgn.walletmonitor.ui.components
 
+import androidx.compose.foundation.background
 import androidx.compose.foundation.clickable
 import androidx.compose.foundation.interaction.MutableInteractionSource
 import androidx.compose.foundation.layout.*
@@ -83,8 +84,16 @@ fun CustomBox(
         Modifier
     }
 
+    Surface() {
+
+    }
     Surface(
-        modifier = boxModifier.then(clickableModifier),
+        modifier = boxModifier
+            .then(clickableModifier)
+            .background(
+                MaterialTheme.colorScheme.surface,
+                MaterialTheme.shapes.medium
+            ),
         shape = shape,
         color = backgroundColor
     ) {
@@ -92,9 +101,9 @@ fun CustomBox(
             modifier = Modifier
                 .drawWithContent {
                     drawContent()
-                    
+
                     val outline = shape.createOutline(size, layoutDirection, this)
-                    
+
                     // Internal Shadow (Inset effect)
                     if (shadowType == ShadowType.Internal && shadowElevation > 0.dp) {
                         val shadowPx = shadowElevation.toPx()
