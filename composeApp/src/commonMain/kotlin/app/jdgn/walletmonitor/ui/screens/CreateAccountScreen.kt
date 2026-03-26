@@ -3,21 +3,17 @@ package app.jdgn.walletmonitor.ui.screens
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.rememberScrollState
 import androidx.compose.material.icons.Icons
-import androidx.compose.material.icons.filled.AccountBalance
 import androidx.compose.material.icons.filled.Check
 import androidx.compose.material3.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.Color
 import androidx.compose.ui.text.font.FontWeight
 import androidx.compose.ui.text.style.TextAlign
 import androidx.compose.ui.unit.dp
 import app.jdgn.walletmonitor.navigation.Navigator
-import app.jdgn.walletmonitor.ui.components.CustomBox
 import app.jdgn.walletmonitor.ui.components.CustomScaffold
 import app.jdgn.walletmonitor.ui.components.FadingScroll
-import app.jdgn.walletmonitor.ui.components.dialogs.CustomDialog
 import app.jdgn.walletmonitor.ui.components.form.*
 import app.jdgn.walletmonitor.viewmodel.CreateAccountViewModel
 import org.koin.compose.koinInject
@@ -30,8 +26,6 @@ fun CreateAccountScreen(navigator: Navigator) {
     val viewModel: CreateAccountViewModel = koinInject()
     val state by viewModel.state.collectAsState()
     
-    var showIconDialog by remember { mutableStateOf(false) }
-
     LaunchedEffect(state.isSuccess) {
         if (state.isSuccess) {
             navigator.goBack()
@@ -60,7 +54,7 @@ fun CreateAccountScreen(navigator: Navigator) {
                         .padding(16.dp)
                         .fillMaxWidth(),
                     verticalArrangement = Arrangement.spacedBy(20.dp),
-                    horizontalAlignment = Alignment.CenterHorizontally
+                    horizontalAlignment = Alignment.Start // Cambiado a Start para alineación perfecta a la izquierda
                 ) {
                     // First Row: Icon and Name + Bank
                     if (isWide) {
@@ -71,12 +65,12 @@ fun CreateAccountScreen(navigator: Navigator) {
                             Row(
                                 modifier = Modifier.weight(0.5f),
                                 verticalAlignment = Alignment.CenterVertically,
-                                horizontalArrangement = Arrangement.spacedBy(12.dp)
+                                horizontalArrangement = Arrangement.spacedBy(16.dp)
                             ) {
-                                IconSelector(
-                                    icon = state.icon,
-                                    color = state.selectedColor,
-                                    onClick = { showIconDialog = true }
+                                IconPickerField(
+                                    selectedIconName = state.icon,
+                                    onIconSelected = viewModel::onIconChange,
+                                    color = state.selectedColor
                                 )
                                 CustomTextField(
                                     value = state.name,
@@ -98,15 +92,16 @@ fun CreateAccountScreen(navigator: Navigator) {
                             )
                         }
                     } else {
+                        // En móvil, agrupamos el IconPicker y el TextField en un Row
                         Row(
                             modifier = Modifier.fillMaxWidth(),
                             verticalAlignment = Alignment.CenterVertically,
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
-                            IconSelector(
-                                icon = state.icon,
-                                color = state.selectedColor,
-                                onClick = { showIconDialog = true }
+                            IconPickerField(
+                                selectedIconName = state.icon,
+                                onIconSelected = viewModel::onIconChange,
+                                color = state.selectedColor
                             )
                             CustomTextField(
                                 value = state.name,
@@ -116,6 +111,7 @@ fun CreateAccountScreen(navigator: Navigator) {
                                 customThemeColor = state.selectedColor
                             )
                         }
+                        
                         SelectorField(
                             label = "Bank",
                             items = state.banks,
@@ -181,7 +177,7 @@ fun CreateAccountScreen(navigator: Navigator) {
                     } else {
                         Row(
                             modifier = Modifier.fillMaxWidth(),
-                            horizontalArrangement = Arrangement.spacedBy(12.dp)
+                            horizontalArrangement = Arrangement.spacedBy(16.dp)
                         ) {
                             CurrencySelector(
                                 currencies = state.currencies,
@@ -241,72 +237,35 @@ fun CreateAccountScreen(navigator: Navigator) {
 
                     Spacer(modifier = Modifier.height(24.dp))
 
-                    Button(
-                        onClick = { viewModel.saveAccount() },
-                        modifier = Modifier
-                            .fillMaxWidth(if (isWide) 0.4f else 0.8f)
-                            .height(56.dp),
-                        colors = ButtonDefaults.buttonColors(
-                            containerColor = state.selectedColor
-                        ),
-                        shape = MaterialTheme.shapes.medium
-                    ) {
-                        Icon(Icons.Default.Check, contentDescription = null)
-                        Spacer(modifier = Modifier.width(8.dp))
-                        Text("CREATE ACCOUNT", fontWeight = FontWeight.Bold)
+                    // Centrar el botón manualmente
+                    Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                        Button(
+                            onClick = { viewModel.saveAccount() },
+                            modifier = Modifier
+                                .fillMaxWidth(if (isWide) 0.4f else 0.8f)
+                                .height(56.dp),
+                            colors = ButtonDefaults.buttonColors(
+                                containerColor = state.selectedColor
+                            ),
+                            shape = MaterialTheme.shapes.medium
+                        ) {
+                            Icon(Icons.Default.Check, contentDescription = null)
+                            Spacer(modifier = Modifier.width(8.dp))
+                            Text("CREATE ACCOUNT", fontWeight = FontWeight.Bold)
+                        }
                     }
 
                     if (state.error != null) {
-                        Text(
-                            text = state.error!!,
-                            color = MaterialTheme.colorScheme.error,
-                            style = MaterialTheme.typography.bodySmall
-                        )
+                        Box(modifier = Modifier.fillMaxWidth(), contentAlignment = Alignment.Center) {
+                            Text(
+                                text = state.error!!,
+                                color = MaterialTheme.colorScheme.error,
+                                style = MaterialTheme.typography.bodySmall
+                            )
+                        }
                     }
                 }
             }
-        }
-    }
-
-    if (showIconDialog) {
-        CustomDialog(
-            onDismissRequest = { showIconDialog = false },
-            header = { Text("Select Icon", style = MaterialTheme.typography.titleLarge) },
-            body = {
-                Text("List of icons for the system will be available here soon.")
-            },
-            actions = {
-                TextButton(onClick = { showIconDialog = false }) {
-                    Text("CLOSE")
-                }
-            },
-            shadowColor = state.selectedColor
-        )
-    }
-}
-
-@Composable
-fun IconSelector(
-    icon: String,
-    color: Color,
-    onClick: () -> Unit
-) {
-    CustomBox(
-        modifier = Modifier.size(60.dp),
-        onClick = onClick,
-        padding = 0.dp,
-        shadowColor = color,
-    ) {
-        Box(
-            modifier = Modifier.fillMaxSize(),
-            contentAlignment = Alignment.Center
-        ) {
-            Icon(
-                imageVector = Icons.Default.AccountBalance, // Default for now
-                contentDescription = null,
-                tint = color,
-                modifier = Modifier.size(32.dp)
-            )
         }
     }
 }

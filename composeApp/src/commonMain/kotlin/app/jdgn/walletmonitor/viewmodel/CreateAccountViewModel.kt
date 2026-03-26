@@ -15,7 +15,7 @@ import app.jdgn.walletmonitor.utils.ColorUtils.getRandomColor
 
 data class CreateAccountState(
     val name: String = "",
-    val icon: String = "account_balance",
+    val icon: String = "bank",
     val selectedBank: Banks? = null,
     val selectedCurrency: SelectAllCurrenciesWithType? = null,
     val selectedAccountType: Account_types? = null,
